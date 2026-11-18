@@ -1,0 +1,113 @@
+{
+  "info": {
+    "name": "413630335 StudentHub",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "insertOne",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8877/api/v1/user/insertOne",
+          "host": [
+            "localhost"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "user",
+            "insertOne"
+          ],
+          "protocol": "http",
+          "port": "8877"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"userName\": \"studenthub{{studentSuffix}}\",\n  \"name\": \"測試學生\",\n  \"department\": \"資訊管理學系\",\n  \"grade\": \"一年級\",\n  \"class\": \"A\",\n  \"Email\": \"studenthub{{studentSuffix}}@example.com\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.variables.set(\"studentSuffix\", pm.variables.replaceIn(\"{{$guid}}\").split(\"-\")[0]);"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "const result = pm.response.json();",
+              "pm.test(\"Student saved\", () => {",
+              "  pm.expect(result.code).to.eql(200);",
+              "  pm.expect(result.body.sid).to.match(/^\\d+$/);",
+              "  pm.expect(result.body.name).to.eql(\"測試學生\");",
+              "});",
+              "if (result.code === 200) pm.collectionVariables.set(\"lastInsertedId\", result.body._id);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "findAll",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8877/api/v1/user/findAll",
+          "host": [
+            "localhost"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "user",
+            "findAll"
+          ],
+          "protocol": "http",
+          "port": "8877"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+              "const result = pm.response.json();",
+              "pm.test(\"Student list returned\", () => {",
+              "  pm.expect(result.code).to.eql(200);",
+              "  pm.expect(result.body).to.be.an(\"array\");",
+              "});",
+              "const lastId = pm.collectionVariables.get(\"lastInsertedId\");",
+              "if (lastId) {",
+              "  pm.test(\"List contains the newly inserted student\", () => {",
+              "    pm.expect(result.body.some(student => student._id === lastId)).to.be.true;",
+              "  });",
+              "}"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
