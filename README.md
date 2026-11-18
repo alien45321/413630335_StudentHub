@@ -1,33 +1,37 @@
-# 413630335_StudentHub
+# 413630335 StudentHub
 
-在原本的網頁程式設計專案中新增 StudentHub 學生資料 API。
+依據課程的 [115_StudentHub 範例](https://github.com/yyyxi18/115_StudentHub) 製作。學生清單使用 React，API 使用 Express、TypeScript 和 MongoDB。
 
-## 啟動
+| 路徑 | 用途 |
+| --- | --- |
+| `FrontEndExample/` | React 學生清單 |
+| `BackEndExample/` | Express API、MongoDB 資料模型與測試資料 |
+| `index.html`、`about.html` | 原有的網頁設計作業 |
 
-使用 Node.js 24 以上版本，在專案根目錄執行：
+## 本機啟動
 
-```sh
+安裝 Node.js 24 與 Docker Desktop。若電腦已有 MongoDB，可以直接設定連線並跳過 Docker 指令。
+
+```powershell
+docker run -d --name studenthub-413630335-mongo -p 127.0.0.1:27017:27017 -v studenthub-413630335-data:/data/db mongo:8
+Copy-Item BackEndExample/.env.example BackEndExample/.env
+npm --prefix FrontEndExample ci
+npm --prefix FrontEndExample run build
+npm --prefix BackEndExample ci
+npm --prefix BackEndExample run build
+npm --prefix BackEndExample run seed
 npm start
 ```
 
-API 預設位於 `http://localhost:8877`。SQLite 資料庫會在第一次啟動時建立於 `data/students.sqlite`，關閉伺服器後已新增的資料仍會保留。
-
-若 8877 已被使用，可在 PowerShell 執行 `$env:PORT = '8878'; npm start`，然後將 Postman 的兩個請求改用相同的連接埠。
-
-| 方法 | 路徑 | 功能 |
-| --- | --- | --- |
-| POST | `/api/v1/user/insertOne` | 新增一筆學生資料，回傳新增的學生 |
-| GET | `/api/v1/user/findAll` | 依 `sid` 順序列出所有學生 |
+在瀏覽器開啟 `http://127.0.0.1:8877/`。初始化會在空的學生清單中放入兩筆虛構學生資料。若使用已有帳號的 MongoDB，可在 `BackEndExample/.env` 設定 `DBUSER`、`DBPASSWORD` 及相應的 `DBAUTHSource`。
 
 ## Postman 測試
 
-1. 匯入 [StudentHub.postman_collection.json](StudentHub.postman_collection.json)。
-2. 執行 `insertOne`，確認 HTTP 200 並檢查回傳的 `sid`。範例每次執行會使用不同的測試帳號。
-3. 執行 `findAll`，確認 HTTP 200，並在回傳陣列中找到剛新增的測試學生。
+匯入 [StudentHub.postman_collection.json](StudentHub.postman_collection.json)。執行整個 Collection，或先送出 `insertOne` 再執行 `findAll`。如果更改 API 埠號，請一併調整 Postman 的 `baseUrl`。
 
-## 實測截圖
+| 方法 | 路徑 | 預期結果 |
+| --- | --- | --- |
+| POST | `/api/v1/user/insertOne` | HTTP 200，回傳新增的學生及系統分配的 `sid` |
+| GET | `/api/v1/user/findAll` | HTTP 200，清單包含剛新增的學生 |
 
-以下畫面擷取自官方 Postman CLI 產生的測試報告。實際請求送到 `127.0.0.1:8878`，兩個端點均回傳 `200 OK`，五項斷言全數通過。
-
-- [insertOne 截圖](screenshots/postman-insertOne.png)
-- [findAll 截圖](screenshots/postman-findAll.png)
+範例帳號符合老師規定的 `tku + 科系縮寫 + 四碼座號`。若選到已存在的座號，重新執行新增請求即可產生另一個座號。

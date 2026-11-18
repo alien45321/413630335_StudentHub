@@ -6,6 +6,6 @@
     "node": ">=24"
   },
   "scripts": {
-    "start": "node server.js"
+    "start": "npm --prefix BackEndExample start"
   }
 }

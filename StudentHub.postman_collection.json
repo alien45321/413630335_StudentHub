@@ -15,22 +15,20 @@
           }
         ],
         "url": {
-          "raw": "http://localhost:8877/api/v1/user/insertOne",
+          "raw": "{{baseUrl}}/api/v1/user/insertOne",
           "host": [
-            "localhost"
+            "{{baseUrl}}"
           ],
           "path": [
             "api",
             "v1",
             "user",
             "insertOne"
-          ],
-          "protocol": "http",
-          "port": "8877"
+          ]
         },
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"userName\": \"studenthub{{studentSuffix}}\",\n  \"name\": \"測試學生\",\n  \"department\": \"資訊管理學系\",\n  \"grade\": \"一年級\",\n  \"class\": \"A\",\n  \"Email\": \"studenthub{{studentSuffix}}@example.com\"\n}",
+          "raw": "{\n  \"userName\": \"tkuxx{{studentSuffix}}\",\n  \"name\": \"測試學生\",\n  \"department\": \"資訊管理學系\",\n  \"grade\": \"一年級\",\n  \"class\": \"A\",\n  \"Email\": \"tkuxx{{studentSuffix}}@example.com\"\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -44,7 +42,8 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "pm.variables.set(\"studentSuffix\", pm.variables.replaceIn(\"{{$guid}}\").split(\"-\")[0]);"
+              "const random = parseInt(pm.variables.replaceIn(\"{{$guid}}\").slice(0, 8), 16);",
+              "pm.variables.set(\"studentSuffix\", String(5000 + random % 5000));"
             ]
           }
         },
@@ -72,18 +71,16 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:8877/api/v1/user/findAll",
+          "raw": "{{baseUrl}}/api/v1/user/findAll",
           "host": [
-            "localhost"
+            "{{baseUrl}}"
           ],
           "path": [
             "api",
             "v1",
             "user",
             "findAll"
-          ],
-          "protocol": "http",
-          "port": "8877"
+          ]
         }
       },
       "event": [
@@ -108,6 +105,12 @@
           }
         }
       ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:8877"
     }
   ]
 }
