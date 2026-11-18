@@ -35,3 +35,10 @@ npm start
 | GET | `/api/v1/user/findAll` | HTTP 200，清單包含剛新增的學生 |
 
 範例帳號符合老師規定的 `tku + 科系縮寫 + 四碼座號`。若選到已存在的座號，重新執行新增請求即可產生另一個座號。
+
+## 實測截圖
+
+使用 MongoDB 8，以官方 Postman CLI 測試 `http://127.0.0.1:8877`。兩個請求都回傳 `200 OK`，五項斷言通過，React 頁面也顯示了剛新增的資料。
+
+- [findAll 測試截圖](screenshots/postman-findAll.png)
+- [insertOne 測試截圖](screenshots/postman-insertOne.png)
