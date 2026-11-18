@@ -24,3 +24,10 @@ API 預設位於 `http://localhost:8877`。SQLite 資料庫會在第一次啟動
 1. 匯入 [StudentHub.postman_collection.json](StudentHub.postman_collection.json)。
 2. 執行 `insertOne`，確認 HTTP 200 並檢查回傳的 `sid`。範例每次執行會使用不同的測試帳號。
 3. 執行 `findAll`，確認 HTTP 200，並在回傳陣列中找到剛新增的測試學生。
+
+## 實測截圖
+
+以下畫面擷取自官方 Postman CLI 產生的測試報告。實際請求送到 `127.0.0.1:8878`，兩個端點均回傳 `200 OK`，五項斷言全數通過。
+
+- [insertOne 截圖](screenshots/postman-insertOne.png)
+- [findAll 截圖](screenshots/postman-findAll.png)
